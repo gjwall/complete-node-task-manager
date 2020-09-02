@@ -17,34 +17,29 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
     // Connect to a specific database
     const db = client.db(databaseName)
 
-    // Insert a single document
-    // db.collection('users').insertOne({
-    //     name: 'Bob',
-    //     age: 60
-    // }, (error, result) => {
-    //     if(error) {
-    //         return console.log("Error during insert " + error)
-    //     }
-
-    //     console.log(result.ops)
-    // })
-
-    /// Insert many documents
-    db.collection('users').insertMany([
+    const tasksCollection = 'tasks'
+    const taskArray = [
         {
-            name: 'Bob2',
-            age: 50
+            description: 'task one',
+            completed: true
         },
         {
-            name: 'Bob3',
-            age: 40
+            description: 'task two',
+            completed: false
+        },
+        {
+            description: 'task three',
+            completed: true
         }
-    ], (error, result) => {
+    ]
+
+    db.collection(tasksCollection).insertMany(taskArray, (error, result) => {
         if(error) {
-            return console.log("Error during insert " + error)
+            return console.log('The insert many failed ' + error)
         }
 
-        console.log(result.ops)
+        console.log(result.ops) 
     })
+
 
 })
