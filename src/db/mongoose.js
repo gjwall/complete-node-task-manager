@@ -31,7 +31,7 @@ mongoose.connect(connectionURL, {
 // })
 
 // Task model
-const Task = mongoose.model('Tasks', {
+const Task = mongoose.model('Task', {
     description: {
         type: String
     },
