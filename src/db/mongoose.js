@@ -10,24 +10,43 @@ mongoose.connect(connectionURL, {
 })
 
 // User model
-const User = mongoose.model('User', {
-    name: {
+// const User = mongoose.model('User', {
+//     name: {
+//         type: String
+//     }, 
+//     age:  {
+//         type: Number
+//     }
+// })
+
+// const me = new User({
+//     name: 'Graham',
+//     age: 43
+// })
+
+// me.save().then((obj) => {
+//     console.log(obj)
+// }).catch((error) => {
+//     console.log(error)
+// })
+
+// Task model
+const Task = mongoose.model('Tasks', {
+    description: {
         type: String
-    }, 
-    age:  {
-        type: Number
+    },
+    completed: {
+        type: Boolean
     }
 })
 
-const me = new User({
-    name: 'Graham',
-    age: 43
+const aTask = new Task({
+    description: 'Task One',
+    completed: false
 })
 
-me.save().then((obj) => {
-    console.log(obj)
+aTask.save().then((savedTask) => {
+    console.log(savedTask)
 }).catch((error) => {
     console.log(error)
 })
-
-// Task model
