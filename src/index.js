@@ -9,6 +9,37 @@ const port = process.env.PORT || 8080
 // Set up express to automatically parse incoming JSON
 app.use(express.json())
 
+////////////////////////
+// Get (read) end points
+////////////////////////
+app.get('/users', (req, res) => {
+    // Fetch all users
+    User.find( {} ).then((users) => {
+        res.send(users)
+    }).catch((e) => {
+        res.status(500).send()
+    })
+})
+
+// Fetch an individual user
+// Express gives the developer access to the :id parameter
+app.get('/users/:id', (req, res) => {
+    const _id = req.params.id
+
+    User.findById(_id).then((user) => {
+        if(!user) {
+            return res.status(404).send()
+        }
+
+        res.send(user)
+    }).catch((e) => {
+        return res.status(500).send()
+    })
+})
+
+///////////////////////////
+// POST (create) end points
+///////////////////////////
 app.post('/users', (req, res) => {
     const user = new User(req.body)
     user.save().then(() => {
@@ -19,7 +50,6 @@ app.post('/users', (req, res) => {
 })
 
 app.post('/tasks', (req, res) => {
-    //res.send(req.body)
     const task = new Task(req.body)
     task.save().then(() => {
         res.status(201).send(task)
