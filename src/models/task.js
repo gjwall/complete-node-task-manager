@@ -14,15 +14,4 @@ const Task = mongoose.model('Task', {
     }
 })
 
-// const aTask = new Task({
-//     description: '   Task Four   ',
-//     completed: true
-// })
-
-// aTask.save().then((savedTask) => {
-//     console.log(savedTask)
-// }).catch((error) => {
-//     console.log(error)
-// })
-
 module.exports = Task
