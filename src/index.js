@@ -12,6 +12,10 @@ app.use(express.json())
 ////////////////////////
 // Get (read) end points
 ////////////////////////
+
+////////////////////////
+// Users
+////////////////////////
 app.get('/users', (req, res) => {
     // Fetch all users
     User.find( {} ).then((users) => {
@@ -34,6 +38,30 @@ app.get('/users/:id', (req, res) => {
         res.send(user)
     }).catch((e) => {
         return res.status(500).send()
+    })
+})
+
+////////////////////////
+// Tasks
+////////////////////////
+app.get('/tasks', (req, res) => {
+    Task.find( { } ).then((tasks) => {
+        res.send(tasks) 
+    }).catch((e) => {
+        res.status(500).send()
+    })
+})
+
+app.get('/tasks/:id', (req, res) => {
+    const _id = req.params.id
+
+    Task.findById(_id).then((user) => {
+        if(!user) {
+            return res.status(404).send()
+        }
+        res.send(user)
+    }).catch((e) => {
+        res.status(500).send()
     })
 })
 
