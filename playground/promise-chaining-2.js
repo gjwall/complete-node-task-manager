@@ -1,12 +1,11 @@
 require('./../src/db/mongoose')
 const Task = require('../src/models/task')
-const { ObjectID } = require('mongodb')
 
 const deleteTaskAndCount = async (id) => {
     console.log('id passed ', id) 
-    const task            = await Task.findByIdAndDelete(id)
-    const incompleteCount = await Task.countDocuments( { completed: false } )
-    return incompleteCount
+    const task  = await Task.findByIdAndDelete(id)
+    const count = await Task.countDocuments( { completed: false } )
+    return count
 }
 
 deleteTaskAndCount('5f52a7746e9e8f28f065ddff').then((count) => {
