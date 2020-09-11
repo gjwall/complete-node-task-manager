@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     }, 
     email: {
         type: String,
+        unique: true, 
         required: true,
         trim: true,
         lowercase: true,
@@ -48,12 +49,29 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+userSchema.statics.findByCredentials = async (email, password) => {
+
+    const user = await User.findOne({email})
+
+    if(!user) {
+        throw new Error('Unable to log in')
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password) 
+
+    if(!isMatch) {
+        throw new Error('Unable to log in')
+    }
+
+    return user 
+}
+
 // Need to use the function syntax so that the 'this' variable is available
 // declaring functions with => means the 'this' variable is not available
+// Hash the user password before saving
 userSchema.pre('save', async function (next) {
     const user = this
 
-    console.log('Save called')
     if(user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
