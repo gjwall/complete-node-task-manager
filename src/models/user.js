@@ -1,6 +1,7 @@
 const mongoose = require('mongoose') 
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 // See Mongoose documents regarding middleware
 
@@ -46,8 +47,28 @@ const userSchema = new mongoose.Schema({
                 throw new Error('The password must be at least six characters long')
             }
         }
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
+
+userSchema.methods.generateAuthToken = async function() {
+    const user = this 
+
+    const token = jwt.sign( { _id: user._id.toString() }, 'this is my new course' ) 
+
+    user.tokens = user.tokens.concat( {token} )
+
+    await user.save()
+
+    return token
+
+}
+
 
 userSchema.statics.findByCredentials = async (email, password) => {
 
