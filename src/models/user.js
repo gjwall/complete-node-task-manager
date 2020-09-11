@@ -97,7 +97,7 @@ userSchema.pre('save', async function (next) {
         user.password = await bcrypt.hash(user.password, 8)
     }
 
-    console.log(user.password)
+    // console.log(user.password)
     // Need to call the next callback
     next()
 })
