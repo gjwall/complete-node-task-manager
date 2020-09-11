@@ -1,8 +1,11 @@
 const mongoose = require('mongoose') 
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
 
-// User model
-const User = mongoose.model('User', {
+// See Mongoose documents regarding middleware
+
+// Declare the schema first
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -44,5 +47,23 @@ const User = mongoose.model('User', {
         }
     }
 })
+
+// Need to use the function syntax so that the 'this' variable is available
+// declaring functions with => means the 'this' variable is not available
+userSchema.pre('save', async function (next) {
+    const user = this
+
+    console.log('Save called')
+    if(user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+
+    console.log(user.password)
+    // Need to call the next callback
+    next()
+})
+
+// User model
+const User = mongoose.model('User', userSchema)
 
 module.exports = User
