@@ -1,25 +1,27 @@
 const express = require('express')
 const User = require('../models/user')
-const { findById } = require('../models/user')
+const auth = require('../middleware/auth')
 const router = new express.Router()
 
 ////////////////////////
 // GET
 ////////////////////////
-router.get('/users', async (req, res) => {
+router.get('/users/me', auth, async (req, res) => {
 
-    try {
-        const users = await User.find( {} )
-        res.send(users)
-    } catch (e) {
-        res.status(500).send()
-    }
+    // try {
+    //     const users = await User.find( {} )
+    //     res.send(users)
+    // } catch (e) {
+    //     res.status(500).send()
+    // }
+
+    res.send(req.user)
 
 })
 
 // Fetch an individual user
 // Express gives the developer access to the :id parameter
-router.get('/users/:id', async (req, res) => {
+router.get('/users/:id', auth, async (req, res) => {
     const _id = req.params.id
 
     try {
