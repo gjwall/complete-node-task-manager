@@ -66,9 +66,20 @@ userSchema.methods.generateAuthToken = async function() {
     await user.save()
 
     return token
-
 }
 
+// First way of doing the hiding private data
+// userSchema.methods.getPublicProfile = function () { // Original signature
+// The toJSON method does this with no other changes
+userSchema.methods.toJSON = function () {
+    const user = this
+    const userObject = user.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
 
 userSchema.statics.findByCredentials = async (email, password) => {
 

@@ -61,6 +61,9 @@ router.post('/users/login', async(req, res) => {
 
         const token = await user.generateAuthToken()
 
+        // First way we were shown: very manual way of hiding public data
+        // res.send( {user: user.getPublicProfile(), token} )
+        // Behind the scenes these are calling JSON.stringify()
         res.send( {user, token} )
     } catch (e) {
         res.status(400).send()
