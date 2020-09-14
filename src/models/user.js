@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Task = require('./task')
 
 // See Mongoose documents regarding middleware
 
@@ -87,19 +88,14 @@ userSchema.methods.toJSON = function () {
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {
-
     const user = await User.findOne({email})
-
     if(!user) {
         throw new Error('Unable to log in')
     }
-
     const isMatch = await bcrypt.compare(password, user.password) 
-
     if(!isMatch) {
         throw new Error('Unable to log in')
     }
-
     return user 
 }
 
@@ -115,6 +111,13 @@ userSchema.pre('save', async function (next) {
 
     // console.log(user.password)
     // Need to call the next callback
+    next()
+})
+
+// Delete user tasks when user is removed
+userSchema.pre('remove', async function(next) {
+    const user = this
+    await Task.deleteMany( {owner: user._id} )
     next()
 })
 
