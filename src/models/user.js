@@ -58,15 +58,20 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.generateAuthToken = async function() {
     const user = this 
-
     const token = jwt.sign( { _id: user._id.toString() }, 'this is my new course' ) 
-
     user.tokens = user.tokens.concat( {token} )
-
     await user.save()
-
     return token
 }
+
+// The User/Task relationship video
+// The virtual is not stored in the database
+// it is only for mongoose
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
 
 // First way of doing the hiding private data
 // userSchema.methods.getPublicProfile = function () { // Original signature
@@ -114,6 +119,8 @@ userSchema.pre('save', async function (next) {
 })
 
 // User model
+// the text here 'User' needs to match when used in other models for referencing
+// see task.js and the ref field
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
