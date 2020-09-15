@@ -8,13 +8,19 @@ const router = new express.Router()
 ////////////////////////
 
 // GET /tasks?completed=true
-// GET /tasks?completed=false
 // limit and skip used for pagination
+// sortBy=createdAt_desc
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
+    const sort = {}
 
     if(req.query.completed) {
         match.completed = req.query.completed ==='true'
+    }
+
+    if(req.query.sortBy) {
+        const parts = req.query.sortBy.split(':') 
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
     }
 
     try {
@@ -23,7 +29,8 @@ router.get('/tasks', auth, async (req, res) => {
             match,
             options: {
                 limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip)
+                skip: parseInt(req.query.skip),
+                sort
             }
         }).execPopulate()
         res.send(req.user.tasks) 
