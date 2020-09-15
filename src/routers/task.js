@@ -9,6 +9,7 @@ const router = new express.Router()
 
 // GET /tasks?completed=true
 // GET /tasks?completed=false
+// limit and skip used for pagination
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
 
@@ -17,12 +18,13 @@ router.get('/tasks', auth, async (req, res) => {
     }
 
     try {
-        // Two alternatives for doing the below. See the commented line.
-        // Populate allows further filtering whereas Task.find does not in this course
-        //const tasks = await Task.find({owner: req.user._id})
         await req.user.populate({
             path: 'tasks',
-            match
+            match,
+            options: {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip)
+            }
         }).execPopulate()
         res.send(req.user.tasks) 
     } catch (e) {
